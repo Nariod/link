@@ -1,4 +1,5 @@
-use actix_web::{get, guard, web, FromRequest, HttpResponse, Responder};
+use actix_web::{get, guard, web, HttpResponse, Responder};
+use actix_web::HttpRequest;
 use serde::{Deserialize, Serialize};
 //use std::io::Write;
 
@@ -99,7 +100,7 @@ pub fn pass_link_config(cfg: &mut web::ServiceConfig) {
 // add bruteforce countermeasures here
 pub async fn link_register(
     query: web::Json<RegisterLink>,
-    http_req: web::HttpRequest,
+    http_req: HttpRequest,
     data: web::Data<Links>,
 ) -> impl Responder {
     let mut new = links::Link::new();
@@ -145,7 +146,7 @@ pub async fn link_register(
 // prefereably private/public key
 pub async fn link_poll(
     callback: web::Json<Callback>,
-    http_req: web::HttpRequest,
+    http_req: HttpRequest,
     data: web::Data<Links>,
 ) -> impl Responder {
     // check if X-Request-ID exists

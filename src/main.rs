@@ -8,5 +8,5 @@ extern crate prettytable;
 
 #[actix_web::main]
 async fn main() {
-    util::cli::main_loop().await;
+    let _ = util::cli::main_loop().await;
 }

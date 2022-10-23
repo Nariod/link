@@ -1,9 +1,4 @@
-use std::{
-    fs,
-    io::prelude::*,
-    os::unix::fs::OpenOptionsExt,
-    process::Command,
-};
+use std::{fs, io::prelude::*, os::unix::fs::OpenOptionsExt, process::Command};
 
 // internal packages
 use crate::util;
@@ -37,7 +32,9 @@ fn donut_create() -> bool {
             .mode(0o755)
             .open(&donut_path)
             .expect("Error writing donut");
-        donut_file.write_all(donut).expect("Could not write donut contents to file");
+        donut_file
+            .write_all(donut)
+            .expect("Could not write donut contents to file");
     }
     true
 }
@@ -65,7 +62,7 @@ pub fn create_shellcode(executable_path: String, parameters: Vec<String>) -> Opt
             .output();
         match output {
             Err(_) => println!("could not generate"),
-            Ok(_) => {},
+            Ok(_) => {}
         }
     } else {
         let output = std::process::Command::new(&donut_path)
@@ -73,7 +70,7 @@ pub fn create_shellcode(executable_path: String, parameters: Vec<String>) -> Opt
             .output();
         match output {
             Err(_) => println!("could not generate"),
-            Ok(_) => {},
+            Ok(_) => {}
         }
     }
     let shellcode = match std::fs::read("payload.bin") {

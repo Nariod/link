@@ -29,17 +29,17 @@ pub async fn spawn_server(
     });
     let links = links_init.clone();
     // check certificate path
-    let (key_path, cert_path) = if Path::new("cert").exists() { 
+    let (key_path, cert_path) = if Path::new("cert").exists() {
         check_certs("cert".to_string())
     } else {
         let arg = cli_line("Please provide full path to folder with certificates (contains key.pem and cert.pem): ");
         if Path::new(&arg[0]).exists() {
             check_certs(arg[0].clone())
-        } else { 
+        } else {
             exit(1);
         }
     };
-    
+
     thread::spawn(move || {
         // load links
         // load ssl
@@ -88,12 +88,15 @@ pub async fn spawn_server(
     links_init
 }
 
-fn check_certs(cert_dir: String) -> (String, String) { 
+fn check_certs(cert_dir: String) -> (String, String) {
     // check for key.pem and cert.pem
     let key_path = format!("{}/key.pem", &cert_dir);
     let cert_path = format!("{}/cert.pem", &cert_dir);
     if !Path::new(&key_path).exists() || !Path::new(&cert_path).exists() {
-        println!("Certificate directory \"{}\" does not contain key.pem or cert.pem", &cert_dir);
+        println!(
+            "Certificate directory \"{}\" does not contain key.pem or cert.pem",
+            &cert_dir
+        );
         exit(1);
     }
     (key_path, cert_path)

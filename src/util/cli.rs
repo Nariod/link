@@ -262,7 +262,9 @@ fn links_loop(links: web::Data<Links>, args: Vec<String>) -> Result<()> {
                     "mimikatz" => util::nonstd::mimikatz(links.clone(), link_index, args),
                     "procdump" => util::nonstd::procdump(links.clone(), link_index, args),
                     "execute-pe" => util::nonstd::execute_pe(links.clone(), link_index, args),
-                    "execute-shellcode" => util::nonstd::execute_shellcode(links.clone(), link_index, args),
+                    "execute-shellcode" => {
+                        util::nonstd::execute_shellcode(links.clone(), link_index, args)
+                    }
                     "powerpick" => println!("todo"),
                     // have pre generated DLLs for dropping
                     // teams and other programs commonly used
@@ -337,8 +339,16 @@ fn links_list(links: web::Data<Links>, all: bool) {
     // create table
     let mut table = Table::new();
     table.set_format(*format::consts::FORMAT_NO_BORDER);
-    table.add_row(row!["id", "type", "platform", "who", "internal ip", "last checkin", "status"]);
-    
+    table.add_row(row![
+        "id",
+        "type",
+        "platform",
+        "who",
+        "internal ip",
+        "last checkin",
+        "status"
+    ]);
+
     // add links
     for i in 0..count {
         let iu = i as usize;

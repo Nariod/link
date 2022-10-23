@@ -96,7 +96,7 @@ pub fn execute_assembly(links: web::Data<Links>, link_index: usize, mut command:
         None => {
             println!("Could not generate shellcode");
             return;
-        },
+        }
     };
     // update original command if SharpCollection
     if !sharpcollection_tool.is_empty() {
@@ -105,7 +105,7 @@ pub fn execute_assembly(links: web::Data<Links>, link_index: usize, mut command:
     let updated_command = vec![
         "execute-shellcode".to_string(),
         command[1].clone(),
-        shellcode_b64
+        shellcode_b64,
     ];
     links.links.lock().unwrap()[link_index]
         .set_command(updated_command.join(" "), command.join(" "));
@@ -127,12 +127,12 @@ pub fn execute_pe(links: web::Data<Links>, link_index: usize, command: Vec<Strin
         None => {
             println!("Could not generate shellcode");
             return;
-        },
+        }
     };
     let updated_command = vec![
         "execute-shellcode".to_string(),
         command[1].clone(),
-        shellcode_b64
+        shellcode_b64,
     ];
     links.links.lock().unwrap()[link_index]
         .set_command(updated_command.join(" "), command.join(" "));

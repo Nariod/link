@@ -85,12 +85,11 @@ pub fn execute_assembly(links: web::Data<Links>, link_index: usize, mut command:
         }
         command[2] = tool_path;
     }
-    let parameters: Vec<String>;
-    if command.len() > 3 {
-        parameters = command.clone().split_off(3);
+    let parameters: Vec<String> = if command.len() > 3 {
+        command.clone().split_off(3)
     } else {
-        parameters = Vec::new();
-    }
+         Vec::new()
+    };
     let shellcode_b64 = match util::donut::create_shellcode(command[2].clone(), parameters) {
         Some(b64) => b64,
         None => {
@@ -116,12 +115,11 @@ pub fn execute_pe(links: web::Data<Links>, link_index: usize, command: Vec<Strin
         println!("execute-pe <process> <path-to-pe> <optional parameters>\n   eg: execute-pe svchost whoami.exe");
         return;
     }
-    let parameters: Vec<String>;
-    if command.len() > 3 {
-        parameters = command.clone().split_off(3);
+    let parameters: Vec<String> = if command.len() > 3 {
+        command.clone().split_off(3)
     } else {
-        parameters = Vec::new();
-    }
+        Vec::new()
+    };
     let shellcode_b64 = match util::donut::create_shellcode(command[2].clone(), parameters) {
         Some(b64) => b64,
         None => {

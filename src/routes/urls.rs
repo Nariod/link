@@ -152,9 +152,8 @@ pub async fn link_poll(
     if x_request_id.is_none() {
         return HttpResponse::Ok().body("x-req is none\n");
     }
-    let x_request_id_str: String;
-    if x_request_id.unwrap().to_str().is_ok() {
-        x_request_id_str = x_request_id.unwrap().to_str().unwrap().to_string();
+    let x_request_id_str: String = if x_request_id.unwrap().to_str().is_ok() {
+        x_request_id.unwrap().to_str().unwrap().to_string()
     } else {
         return HttpResponse::Ok().body("x req is err\n");
     };

@@ -42,20 +42,19 @@ pub fn write_task_to_stdout(
     task_command: String,
     returned_data: &str,
 ) {
-    let output: String;
     // check if mimikatz was executed
-    if task_command == *"mimikatz 0" || task_command == *"procdump 0" {
+    let output: String = if task_command == *"mimikatz 0" || task_command == *"procdump 0" {
         let pypykatz_output = write_dump_exec_pypykatz(task_id.clone(), returned_data);
-        output = format!(
+        format!(
             "\n\nLink: {}\nTask ID: {}\nCommand: {}\nOutput:\n\n{}\n",
             link_name, task_id, task_command, pypykatz_output,
-        );
+        )
     } else {
-        output = format!(
+        format!(
             "\n\nLink: {}\nTask ID: {}\nCommand: {}\nOutput:\n\n{}\n",
             link_name, task_id, task_command, returned_data,
-        );
-    }
+        )
+    };
     cli_handle.write_all(output.as_bytes()).unwrap();
 }
 

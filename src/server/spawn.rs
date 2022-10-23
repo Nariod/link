@@ -52,7 +52,9 @@ pub async fn spawn_server(
             .unwrap();
         builder.set_certificate_chain_file(&cert_path).unwrap();
         // web server
-        let sys = actix_web::rt::System::new("protocol-web-server");
+        //let sys = actix_web::rt::System::new("protocol-web-server");
+        let sys = actix_web::rt::System::new();
+
         let pre_srv = HttpServer::new(move || {
             App::new()
                 // logging

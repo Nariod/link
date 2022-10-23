@@ -19,6 +19,11 @@
   </a>
 </p>
 
+## TODO
+- [x] Update main dependencies to latest versions
+- [ ] Update link dependencies to latest versions
+- [ ] Debug generate command
+
 ## Table of Contents
 
 - [Introduction](#introduction)

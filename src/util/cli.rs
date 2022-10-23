@@ -1,6 +1,6 @@
 use actix_web::web;
 use rustyline::error::ReadlineError;
-use rustyline::Editor;
+use rustyline::{Editor, Result};
 use server::links::Links;
 use std::sync::mpsc;
 
@@ -63,7 +63,7 @@ fn main_help() {
     println!("  exit                exits link server");
 }
 
-pub async fn main_loop() {
+pub async fn main_loop() -> Result<()> {
     let (tx, rx) = mpsc::channel();
     let (tx_command, rx_command) = mpsc::channel();
 
@@ -94,7 +94,7 @@ pub async fn main_loop() {
     let links = server::spawn::spawn_server(&tx, &rx_command, bind_addr).await;
     let srv = rx.recv().unwrap();
 
-    let mut rl = Editor::<()>::new();
+    let mut rl = Editor::<()>::new()?;
     let _ = rl.load_history(".protocol-history.txt");
     loop {
         let readline = rl.readline("🔗 > ");
@@ -106,8 +106,8 @@ pub async fn main_loop() {
                     "generate" => util::generate::generate(args),
                     "generate-linux" => util::generate::generate_linux(args),
                     "generate-osx" => util::generate::generate_osx(args),
-                    "links" => links_loop(links.clone(), args),
-                    "kill" => srv.stop(true).await,
+                    "links" => links_loop(links.clone(), args)?,
+                    //"kill" => srv.ServerCommand::Stop::graceful(1),
                     "sharp" => util::sharp::sharpcollection_manage(args),
                     // add are you sure y/N
                     "help" => main_help(),
@@ -117,17 +117,17 @@ pub async fn main_loop() {
             }
             Err(ReadlineError::Interrupted) => {
                 println!("CTRL-C");
-                break;
+                break Ok(());
             }
             Err(ReadlineError::Eof) => {
                 // TODO
                 // perform check instead of killing process
                 println!("CTRL-D");
-                break;
+                break Ok(());
             }
             Err(err) => {
                 println!("Error: {:?}", err);
-                break;
+                break Ok(());
             }
         }
     }
@@ -191,10 +191,10 @@ fn link_info(links: web::Data<Links>, link_index: usize) {
     println!("{:#?}", links.links.lock().unwrap()[link_index])
 }
 
-fn links_loop(links: web::Data<Links>, args: Vec<String>) {
+fn links_loop(links: web::Data<Links>, args: Vec<String>) -> Result<()> {
     if args.len() == 1 {
         links_list(links, false);
-        return;
+        return Ok(());
     }
     // parse args
     let mut args: Vec<String> = args;
@@ -203,15 +203,15 @@ fn links_loop(links: web::Data<Links>, args: Vec<String>) {
         match args[1].as_str() {
             "-h" => {
                 links_help();
-                return;
+                return Ok(());
             }
             "-a" => {
                 links_list(links, true);
-                return;
+                return Ok(());
             }
             _ => {
                 links_help();
-                return;
+                return Ok(());
             }
         }
     } else if args.len() == 3 {
@@ -220,12 +220,12 @@ fn links_loop(links: web::Data<Links>, args: Vec<String>) {
             "-k" => target_link = args[2].to_string(),
             _ => {
                 links_help();
-                return;
+                return Ok(());
             }
         }
     } else {
         links_help();
-        return;
+        return Ok(());
     }
     // check if link exists
     let mut link_exists = false;
@@ -240,10 +240,10 @@ fn links_loop(links: web::Data<Links>, args: Vec<String>) {
     }
     if !link_exists {
         println!("link does not exist");
-        return;
+        return Ok(());
     }
 
-    let mut rl = Editor::<()>::new();
+    let mut rl = Editor::<()>::new()?;
     let _ = rl.load_history(".protocol-history.txt");
     let link_prompt = format!("({}) 🔗 > ", target_link);
     loop {
@@ -294,21 +294,21 @@ fn links_loop(links: web::Data<Links>, args: Vec<String>) {
                     }
                     "?" => links_menu_help(),
                     "info" => link_info(links.clone(), link_index),
-                    "back" => return,
+                    "back" => (),
                     _ => continue,
                 }
             }
             Err(ReadlineError::Interrupted) => {
                 println!("CTRL-C");
-                break;
+                break Ok(());
             }
             Err(ReadlineError::Eof) => {
                 println!("CTRL-D");
-                break;
+                break Ok(());
             }
             Err(err) => {
                 println!("Error: {:?}", err);
-                break;
+                break Ok(());
             }
         }
     }

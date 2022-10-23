@@ -71,9 +71,7 @@ pub fn pass_link_config(cfg: &mut web::ServiceConfig) {
     cfg.service(
         web::resource("/get")
             // custom Json size
-            .data(web::Json::<Callback>::configure(|cfg| {
-                cfg.limit(1024 * 1024 * 1000)
-            }))
+            .app_data(web::Json::<Callback>)
             // guards should be dynamic, such as user agent and per link sessionid cookie
             .guard(guard::Header(
                 "user-agent",

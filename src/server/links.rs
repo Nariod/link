@@ -162,7 +162,7 @@ impl Link {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum LinkStatus {
     Initializing,
     Staging,
@@ -171,7 +171,7 @@ pub enum LinkStatus {
     Exited,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum IntegrityLevel {
     Low,
     Medium,
@@ -179,7 +179,7 @@ pub enum IntegrityLevel {
     System,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum LinkType {
     Ring3,
     Ring0,

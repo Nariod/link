@@ -50,7 +50,7 @@ pub fn shellcode_rdi(dll_path: &str, function_name: &str, user_data: String) -> 
         process::exit(1);
     };
     if !function_name.eq("") {
-        let hash_function_u32 = hash_function_name(&function_name);
+        let hash_function_u32 = hash_function_name(function_name);
         hash_function = pack(hash_function_u32);
     } else {
         hash_function = pack(0x10_u32);

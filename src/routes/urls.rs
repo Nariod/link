@@ -250,5 +250,5 @@ pub async fn link_poll(
         q: String::new(),
         x_request_id: new_x_request_id,
     };
-    return HttpResponse::Ok().json(task);
+    HttpResponse::Ok().json(task)
 }

@@ -92,7 +92,7 @@ pub async fn main_loop() -> Result<()> {
     // spawn server
     let _ = tx_command.send(std::io::stdout());
     let links = server::spawn::spawn_server(&tx, &rx_command, bind_addr).await;
-    let srv = rx.recv().unwrap();
+    let _srv = rx.recv().unwrap();
 
     let mut rl = Editor::<()>::new()?;
     let _ = rl.load_history(".protocol-history.txt");

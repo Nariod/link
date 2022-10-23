@@ -15,7 +15,7 @@ pub struct Task {
     pub output: String,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum TaskStatus {
     Waiting,
     InProgress,
@@ -31,7 +31,7 @@ pub struct Command {
 // print new link to stdout
 pub fn write_link_to_stdout(cli_handle: &mut StdoutLock, link_name: String) {
     let output = format!("\n\n🔗 New link: {} 🔗\n", link_name,);
-    let _ = cli_handle.write_all(output.as_bytes()).unwrap();
+    cli_handle.write_all(output.as_bytes()).unwrap();
 }
 
 // print returned task output to stdout
@@ -44,7 +44,7 @@ pub fn write_task_to_stdout(
 ) {
     let output: String;
     // check if mimikatz was executed
-    if task_command == "mimikatz 0".to_string() || task_command == "procdump 0".to_string() {
+    if task_command == *"mimikatz 0" || task_command == *"procdump 0" {
         let pypykatz_output = write_dump_exec_pypykatz(task_id.clone(), returned_data);
         output = format!(
             "\n\nLink: {}\nTask ID: {}\nCommand: {}\nOutput:\n\n{}\n",
@@ -56,7 +56,7 @@ pub fn write_task_to_stdout(
             link_name, task_id, task_command, returned_data,
         );
     }
-    let _ = cli_handle.write_all(output.as_bytes()).unwrap();
+    cli_handle.write_all(output.as_bytes()).unwrap();
 }
 
 pub fn write_dump_exec_pypykatz(task_id: String, returned_data: &str) -> String {
@@ -83,9 +83,9 @@ pub fn write_dump_exec_pypykatz(task_id: String, returned_data: &str) -> String 
     }
     // write lsass.exe MiniDump to file
     let dump_name = format!("{}-lsass-dump", task_id);
-    let dump_name_b64 = format!("{}.b64", dump_name.clone());
-    let dump_name_bin = format!("{}.bin", dump_name.clone());
-    let mut output_file = fs::File::create(&dump_name_b64.clone()).expect("could not write file");
+    let dump_name_b64 = format!("{}.b64", dump_name);
+    let dump_name_bin = format!("{}.bin", dump_name);
+    let mut output_file = fs::File::create(&dump_name_b64).expect("could not write file");
     output_file
         .write_all(returned_data.as_bytes())
         .expect("could not write contents to dump file");
@@ -102,7 +102,7 @@ pub fn write_dump_exec_pypykatz(task_id: String, returned_data: &str) -> String 
             return returned_data.to_string();
         }
         Ok(dump) => {
-            output_file = fs::File::create(&dump_name_bin.clone()).expect("could not write file");
+            output_file = fs::File::create(&dump_name_bin).expect("could not write file");
             output_file
                 .write_all(&dump.stdout)
                 .expect("could not write contents to dump file");
@@ -141,5 +141,5 @@ pub fn write_dump_exec_pypykatz(task_id: String, returned_data: &str) -> String 
 
     let pypykatz_output = std::str::from_utf8(&dump.stdout).unwrap();
 
-    return pypykatz_output.to_string();
+    pypykatz_output.to_string()
 }

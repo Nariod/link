@@ -144,7 +144,7 @@ pub fn procdump(links: web::Data<Links>, link_index: usize, command: Vec<String>
         return;
     }
     let mut updated_command = command.clone();
-    if command[0] == "mimikatz".to_string() {
+    if command[0] == *"mimikatz" {
         updated_command[0] = "procdump".to_string();
     }
     updated_command[1] = command[1].clone();

@@ -15,8 +15,8 @@ fn donut_create() -> bool {
     let link_path = format!("{}/.link", home_dir);
     let third_party_path = format!("{}/3rdparty", link_path);
     let donut_path = format!("{}/3rdparty/donut", link_path);
-    if !fs::metadata(donut_path.as_str()).is_ok() {
-        if !fs::metadata(third_party_path.as_str()).is_ok() {
+    if fs::metadata(donut_path.as_str()).is_err() {
+        if fs::metadata(third_party_path.as_str()).is_err() {
             match fs::create_dir_all(third_party_path.as_str()) {
                 Err(e) => {
                     println!("{}", e);
@@ -55,7 +55,7 @@ pub fn create_shellcode(executable_path: String, parameters: Vec<String>) -> Opt
     let donut_path = format!("{}/3rdparty/donut", link_path);
 
     // generate payload
-    if parameters.len() > 0 {
+    if !parameters.is_empty() {
         let params = parameters.join(",");
         let output = Command::new(&donut_path)
             .args(&["-a", "2", "-p", &params, "-f", &executable_path])
